@@ -79,13 +79,41 @@ var msg  = document.getElementById("bootMsg");
 var app  = document.getElementById("app");
 
 // Strip injected ad / redirect scripts from the remote HTML before it runs.
-var AD_HOSTS = /(effectivecpmnetwork|luminsdk|noct-ad-timer)/i;
+// NOTE: "luminsdk" is the legitimate game-loader SDK and must NOT be stripped.
+    var AD_HOSTS = /(effectivecpmnetwork|noct-ad-timer)/i;
+    // Runtime cleaner injected into the loader so per-game HTML (srcdoc) is
+    // scrubbed of in-game ads before it renders into the game viewer iframe.
+    var GAME_AD_CLEANER =
+        '<scr'+'ipt>window.__adClean=function(h){try{' +
+            'h=String(h||"");' +
+            'var AD=/(effectivecpmnetwork|noct-ad|h5Sdk|googlesyndication|doubleclick|googleadservices|pagead|adsbygoogle|adsterra|propellerads|popcash|popads|hilltopads|onclickads|\\/ads?\\/)/i;' +
+            'h=h.replace(/<scr'+'ipt\\b[^>]*\\bsrc=["\']([^"\']*)["\'][^>]*>\\s*<\\/scr'+'ipt>/gi,function(t){return AD.test(t)?"":t;});' +
+            'h=h.replace(/<div\\s+id=["\']sidebarad\\d+["\'][^>]*>[\\s\\S]*?<\\/div>\\s*<\\/div>/gi,"");' +
+            'h=h.replace(/<scr'+'ipt\\b(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)<\\/scr'+'ipt>/gi,function(t,b){return (/requestFullscreen/i.test(b)&&/setInterval/i.test(b))?"":t;});' +
+        '}catch(e){}return h;};<\/scr'+'ipt>';
+
 function sanitize(html) {
     html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, function (tag) {
         return AD_HOSTS.test(tag) ? "" : tag;
     });
     // Rebrand the remote content: Nocturne -> Solaris Mini
     html = html.replace(/Nocturne/g, "Solaris Mini");
+
+    // Inject sanitized game HTML instead of the raw ad-laden game page.
+    html = html.replace(/vFrame\.srcdoc\s*=\s*h\b/g, "vFrame.srcdoc=window.__adClean(h)");
+    // Block popup / redirect ads inside game frames.
+    html = html.replace(/\ballow-popups allow-popups-to-escape-sandbox /g, "");
+    // Lumin games dropped the sandbox entirely; restore a restrictive one so games
+    // still run but cannot open popups or navigate the top window (redirect ads).
+    html = html.replace(
+        /vFrame\.removeAttribute\(\s*["\']sandbox["\']\s*\)\s*;/g,
+        'vFrame.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-orientation-lock");'
+    );
+
+    // Define the cleaner inside the loader document before its scripts run.
+    if (html.indexOf("__adClean") !== -1 && html.indexOf("window.__adClean=function") === -1) {
+        html = html.replace(/<head([^>]*)>/i, "<head$1>" + GAME_AD_CLEANER);
+    }
     return html;
 }
 
