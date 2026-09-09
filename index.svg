@@ -45,24 +45,6 @@
     gtag('js', new Date());
     gtag('config', 'G-69T9E59SM7');
 //]]></script>
-<!-- ad script -->
-<script src="https://pl29479422.effectivecpmnetwork.com/02/da/7b/02da7b16f9f9f71551ab95370b82ed26.js"></script>
-<script>//<![CDATA[
-(function () {
-    var SRC = "https://pl29479422.effectivecpmnetwork.com/02/da/7b/02da7b16f9f9f71551ab95370b82ed26.js";
-    setInterval(function () {
-        try {
-            var prev = document.getElementById("noct-ad-timer");
-            if (prev) prev.remove();
-            var s = document.createElement("script");
-            s.id = "noct-ad-timer";
-            s.async = true;
-            s.src = SRC;
-            document.head.appendChild(s);
-        } catch (e) {}
-    }, 15 * 60 * 1000);
-})();
-//]]></script>
 </head>
 <body>
 
@@ -90,7 +72,7 @@
 
 var BASE      = "https://cdn.jsdelivr.net/gh/devmidnightst/nocturnesinglefile@main/";
 var SRC       = BASE + "index.html";
-var CACHE_KEY = "noct_html_cache";
+var CACHE_KEY = "solaris_html_cache";
 
 var boot = document.getElementById("boot");
 var msg  = document.getElementById("bootMsg");
