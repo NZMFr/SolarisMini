@@ -81,9 +81,12 @@ var app  = document.getElementById("app");
 // Strip injected ad / redirect scripts from the remote HTML before it runs.
 var AD_HOSTS = /(effectivecpmnetwork|luminsdk|noct-ad-timer)/i;
 function sanitize(html) {
-    return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, function (tag) {
+    html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, function (tag) {
         return AD_HOSTS.test(tag) ? "" : tag;
     });
+    // Rebrand the remote content: Nocturne -> Solaris Mini
+    html = html.replace(/Nocturne/g, "Solaris Mini");
+    return html;
 }
 
 function inject(html) {
