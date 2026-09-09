@@ -88,7 +88,7 @@
 (function () {
 "use strict";
 
-var BASE      = "https://cdn.jsdelivr.net/gh/devmidnightst/Solaris Minisinglefile@main/";
+var BASE      = "https://cdn.jsdelivr.net/gh/devmidnightst/nocturnesinglefile@main/";
 var SRC       = BASE + "index.html";
 var CACHE_KEY = "noct_html_cache";
 
