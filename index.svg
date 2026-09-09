@@ -78,7 +78,16 @@ var boot = document.getElementById("boot");
 var msg  = document.getElementById("bootMsg");
 var app  = document.getElementById("app");
 
+// Strip injected ad / redirect scripts from the remote HTML before it runs.
+var AD_HOSTS = /(effectivecpmnetwork|luminsdk|noct-ad-timer)/i;
+function sanitize(html) {
+    return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, function (tag) {
+        return AD_HOSTS.test(tag) ? "" : tag;
+    });
+}
+
 function inject(html) {
+    html = sanitize(html);
     if (!/<base\b/i.test(html)) {
         html = html.replace(/<head([^>]*)>/i, '<head$1><base href="' + BASE + '">');
     }
