@@ -255,7 +255,7 @@ $("devBtn").onclick = openDev;
 /* boot extras: onboarding + dev button visibility */
 function bootExtras(){
   const m = SM.me();
-  $("devBtn").classList.toggle("hidden", !(m && (m.user === "owner" || m.role === "Owner")));
+  $("devBtn").classList.toggle("hidden", !(m && (m.user === "nzm" || m.role === "Owner")));
   if (!m) SM.onboarding();
   else if (m.user === "owner" && !m.role){ SM.saveMe({ role: "Owner" }); $("devBtn").classList.remove("hidden"); }
 }
